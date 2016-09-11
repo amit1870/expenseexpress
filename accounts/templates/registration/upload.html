@@ -1,0 +1,43 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+{% block site_wrapper %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+			
+		</div>
+		<div class="col-md-4">
+			{% if error %}
+				<div class="alert alert-danger">
+					<h4>{{ error }}</h4>
+				</div>
+			{% endif %}
+			<form action="." method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ form.as_p }}
+				
+				<input type="submit" class="btn btn-success btn-block" value="Upload">
+			</form>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+</div>
+
+
+
+{% endblock %}

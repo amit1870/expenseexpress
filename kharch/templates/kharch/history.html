@@ -1,0 +1,135 @@
+{% extends "kharch/base.html" %}
+{% load customtags %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+<script type="text/javascript">
+
+function filter_graph(category,categories){
+	var sel = category[category.selectedIndex].value;
+	if (sel == "SL"){
+		$("#RT").css("display","block");
+		return ;
+	}
+	categories = $.grep(categories, function(value) {
+		return value != sel;
+	});
+
+	console.log(categories);
+
+	for (var i = 0; i < categories.length; i++) {
+		$("#"+categories[i]).css("display","none");
+	}
+	$("#"+sel).css("display","block");
+}
+
+
+function plot_graph(objects, cat) {
+	data = []
+	for (var i = 0; i < objects.length; i++) {
+		if ((objects[i]['category']) == cat){
+			data.push([objects[i]['name'], parseFloat(objects[i]['data'])]);
+		}
+	}
+
+	series = [{
+            type: 'pie',
+            name: cat,
+            data: data
+        }]
+
+	$('#'+cat).highcharts({
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: 'Item share of ' + cat
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 35,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}'
+                }
+            }
+        },
+        series: series
+    });
+
+}
+</script>
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+
+<script type="text/javascript" src="{% static 'kharch/js/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'kharch/js/exporting.js' %}"></script>
+<div class="container">
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<select  onchange="filter_graph(this,{{ cat_code }})">
+				{% for category in categories %}
+					<option value="{{ category.0 }}">{{ category.1 }}</option>
+				{% endfor %}
+			</select>
+			<br><br>
+			{% for cat in cat_code %}
+				{% if cat != "SL" %}
+
+				<div id="{{ cat }}" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto; display:block"></div>
+				{% endif %}
+			{% endfor %}
+
+			<script type="text/javascript">
+
+				var dict = [];
+
+				var series = "{{series|safe}}";
+				series = series.split("<|>");
+				
+				for (var i = 0; i < series.length; i++) {
+					console.log(series[i]);
+					dict.push({ 
+						category: series[i].split("-")[0],
+						name: series[i].split("-")[1],
+						data: series[i].split("-")[2],
+						
+					});
+				}
+
+				{% for cat in cat_code %}
+					{% if cat != "SL" %}
+					plot_graph(dict, '{{cat}}');
+					{% endif %}
+				{% endfor %}
+				
+				
+			</script>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

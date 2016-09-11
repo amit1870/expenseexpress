@@ -1,0 +1,73 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+{% load customtags %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+
+<div class="container">
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4">
+				
+				<form method="post" action="{% url 'kharch:home' %}">
+						{% csrf_token %}
+
+						{% if items|length < 1 %}
+							<p class="bg-danger" align="center"> No item to show </p>
+							
+						{% else %}
+						
+						{% for item in items %}
+						<div class="{{item.category}}" >
+							<input type="checkbox" name="items[]" value="{{ item.name }}">
+							<button class="btn  btn-primary btn-xs" type="button" alt="{{ item.name }}" id="{{ item.id }}">{{ item.name }}</button>
+							<input type="text" name="{{ item.name }}" value="{{ item.cost }}" maxlength="6" size="6" />
+
+							<select name="{{ item.name }}_sel">
+								{% for pay in payment %}
+									<option value="{{ pay.0 }}">{{ pay.1 }}</option>
+								{% endfor %}
+							</select>
+							
+							{% if request.user != item.added_by and request.user != item|inherited_by %}
+								<input type="checkbox" name="append[]" value="{{ item.name }}" checked>Append
+							{% endif %}
+
+
+							<br/><br/>
+						</div>
+						{% endfor %}
+
+						{% endif %}
+
+						<input type="hidden" value="Item" name="hidden">
+						{% if items|length > 0 %}
+							<button class="btn  btn-warning btn-block" type="submit" alt="Buy" id="buy">Buy</button>
+
+						{% endif %}
+
+						<a class="btn btn-success btn-block" href="{% url 'kharch:add_item' %}" role="button">Add</a>
+						<a class="btn btn-info btn-block" href="{% url 'kharch:edit_item' %}" role="button">Edit</a>
+						<a class="btn btn-danger btn-block" href="{% url 'kharch:delete_item' %}" role="button">Delete</a>
+				</form>
+			</div>
+			<div class="col-md-4"></div>
+			
+		</div>
+</div>
+
+{% endblock %}

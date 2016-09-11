@@ -1,0 +1,71 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="{{ meta_description }}">
+		<meta name="keywords" content="{{ meta_keywords }}">
+    
+    <link rel="stylesheet" href="{% static 'kharch/css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'kharch/css/navbar-fixed-top.css' %}"/>
+    <link rel="stylesheet" href="{% static 'kharch/css/signin.css' %}"/>
+    <link rel="stylesheet" href="{% static 'kharch/css/theme.css' %}"/>
+
+    <script type="text/javascript" src="{% static 'kharch/js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'kharch/js/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static 'kharch/js/kharch.js' %}"></script>
+
+    {% block title %} {% endblock %}
+    {% block css %} {% endblock %}
+    {% block js %} {% endblock %}
+		
+	</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{% url 'kharch:home' %}">ExpenseExpress</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li> 
+            <form class="navbar-form navbar-left" role="search" method="post" action="{% url 'kharch:show_items' %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="text" class="form-control" id="sug" oninput="show_suggestion(this)" name="suggest" placeholder="Search an item">
+
+              </div>
+              <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+              <div class="form-group">
+                <input type="text" class="form-control" name="suggested" id="suggested" style="display:none">
+
+              </div>
+            </form>
+          </li>
+        </ul>
+      	<ul class="nav navbar-nav navbar-right">
+          {% if request.user.username %}
+      		<li><a href="{% url 'accounts:dashboard' %}">{{ request.user.username|capfirst }}</a></li>
+          <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+          {% else %}
+          <li><a href="{% url 'accounts:login' %}">Login</a></li>
+          {% endif %}
+      	</ul>
+      </div>
+    </div>
+  </nav>
+  
+  {% block site_wrapper %} {% endblock %}
+  
+</body>
+
+</html>

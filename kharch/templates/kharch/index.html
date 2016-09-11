@@ -1,0 +1,90 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+
+			<!-- <div class="progress" style="background-color:#449D44">
+				<div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:{{gayab}}%;background-color:#D9534F;">
+				<span class="sr-only">{{gayab}}% Complete</span>
+				</div>
+			</div> -->
+			
+			<div class="col-md-3">
+				<div id="alert_message" class="alert alert-danger alert-dismissible fade in" style="display:none">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">×</span></button> 
+					<h4></h4> 
+				 </div>
+
+				<form method="post" action="." name="cash_form" id="cash_fm">
+					{% csrf_token %}
+					{{ form1.as_p }}
+					<button class="btn  btn-warning btn-block" type="submit" alt="Load Cash" onclick="return validateForm()">Load Cash</button>
+				</form>
+
+			</div>
+			<div class="col-md-6">
+				<canvas id="can" width="400" height="400"></canvas>
+				<a class="btn btn-default btn-xs" href="{% url 'kharch:history' %}" role="button">History</a>
+			</div>
+			<div class="col-md-3">
+				<form method="post" action=".">
+					{% csrf_token %}
+
+					<select  onchange="filter_item(this,{{ cat_code }})">
+					{% for category in categories %}
+						<option value="{{ category.0 }}">{{ category.1 }}</option>
+					{% endfor %}
+					</select>
+					<br/><br/>
+					{% for item in items %}
+					<div class="{{item.category}}" >
+						<input type="checkbox" name="items[]" value="{{ item.name }}">
+						<button class="btn  btn-primary btn-xs" type="button" alt="{{ item.name }}" id="{{ item.id }}">{{ item.name }}</button>
+						<input type="text" name="{{ item.name }}" value="{{ item.cost }}" maxlength="6" size="6" />
+
+						<select name="{{ item.name }}_sel">
+							{% for pay in payment %}
+								<option value="{{ pay.0 }}">{{ pay.1 }}</option>
+							{% endfor %}
+						</select>
+
+						<br/><br/>
+					</div>
+					{% endfor %}
+
+					<input type="hidden" value="Item" name="hidden">
+					<button class="btn  btn-warning" type="submit" alt="Buy" id="buy">Buy</button>
+					<a class="btn btn-success btn-xm" href="{% url 'kharch:add_item' %}" role="button">Add</a>
+					<a class="btn btn-info btn-xm" href="{% url 'kharch:edit_item' %}" role="button">Edit</a>
+					<a class="btn btn-danger btn-xm" href="{% url 'kharch:delete_item' %}" role="button">Delete</a>
+				</form>
+				
+			</div>
+
+		</div>
+
+		
+
+	</div>
+	<script type="text/javascript">
+		showKharch([{{cash}},{{ roti }},{{ kapda }},{{ makan }}, {{ sex }}, {{ other }}])
+	</script>
+	
+{% endblock %}

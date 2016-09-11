@@ -1,0 +1,30 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+{% block site_wrapper %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-4">
+			<strong>You have been successfully logged out !! </strong>
+			<a class="btn btn-info btn-block" href="{% url 'accounts:login' %}" role="button">Login Again</a>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+</div>
+
+{% endblock %}

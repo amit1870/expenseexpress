@@ -1,0 +1,58 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+{% endblock %}
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-5">
+				<form method="post" action="{% url 'kharch:delete_item' %}">
+					{% csrf_token %}
+					
+					<select  onchange="filter_item(this,{{ cat_code }})" name="category">
+					{% for category in categories %}
+						<option value="{{ category.0 }}">{{ category.1 }}</option>
+					{% endfor %}
+					</select>
+					<br/><br/>
+					{% for item in items %}
+					
+					<div class="{{item.category}}" >
+
+						<input type="checkbox" name="items[]" value="{{ item.name }}">
+						
+						<input type="button" class="btn btn-primary btn-xs" name="{{ item.name }}" value="{{ item.name }}"/>&nbsp;&nbsp;
+						<input type="text" name="{{ item.name }}_cost" value="{{ item.cost }}" maxlength="6" size="6" readonly />
+						&nbsp;&nbsp;
+						<select name="{{item.name}}_sel">
+							<option value="{{ item.category }}">{{ item.category }}</option>
+						</select>
+
+						<br/><br/>
+					</div>
+					{% endfor %}
+
+					<input type="hidden" value="Item" name="hidden">
+					<button class="btn btn-danger btn-block" type="submit" alt="Delete" id="del_item">Delete</button>
+					<a class="btn btn-warning btn-block" href="{% url 'kharch:add_item' %}" role="button">Add</a>
+					<a class="btn btn-info btn-block" href="{% url 'kharch:edit_item' %}" role="button">Edit</a>
+
+				</form>
+					
+			</div>
+			<div class="col-md-5"></div>
+		</div>
+	</div>
+	
+{% endblock %}

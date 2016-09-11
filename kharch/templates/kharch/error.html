@@ -1,0 +1,32 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="alert alert-danger">
+					<h4>You will not be able to buy some items. Please load more cash else remove some items.</h4>
+					
+				</div>
+				<a class="btn btn-warning btn-block" href="{% url 'kharch:home' %}" role="button">Load</a>
+				<a class="btn btn-success btn-block" href="{% url 'kharch:home' %}" role="button">Buy</a>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

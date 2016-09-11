@@ -1,0 +1,60 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > {{ request.user.username|capfirst }} | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %} 
+	<link rel="stylesheet" href="{% static 'kharch/css/dashboard.css' %}"/>
+{% endblock %}
+{% block js %} {% endblock %}
+
+{% block site_wrapper %}
+<div class="container">
+	<div class="row">
+		
+		<div class="col-md-9">
+			<h1 class="page-header">Dashboard</h1>
+				<h2>Total cash loaded = {{ total }} </h2>
+				<h2>Remaining cash  = {{ remain }} </h2>
+			  <div class="table-responsive col-md-offset-3">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Cost</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Mode</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for spend in spent_on %}
+	            <tr>
+	            	<td>{{forloop.counter}}</td>
+                <td><a href="{% url 'kharch:get_item'  item_name=spend.item %}"> {{spend.item}}</a></td>
+                <td>{{spend.price}}</td>
+                <td>{{spend.date}}</td>
+                <td>{{spend.category}}</td>
+                <td>{{spend.payment}}</td>
+              </tr>
+
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+		</div>
+		<div class="col-md-3">
+		<h2>Welcome, {{ request.user.username|capfirst }}!</h2>
+			{% with 'kharch/img/'|add:request.user.username as image_static %}
+	    		<img src="{% static image_static %}" class="img-thumbnail" style="max-width:50%" alt="{{ request.user.username }}" />
+			{% endwith %}
+			<br>
+			&nbsp;&nbsp;&nbsp;
+			<a class="btn btn-success btn-xs" href="{% url 'accounts:upload_file' %}" role="button">Change</a>
+		</div>
+	</div>
+</div>
+{% endblock %}

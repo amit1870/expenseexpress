@@ -1,0 +1,77 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+	<script type="text/javascript">
+		function checkForm(){
+			item = document.getElementById("id_name").value;
+			if (item == ""){
+				$("#alert_message h4").text("Add item name.");
+				$("#alert_message").css('display','block');
+				return false;
+			}
+
+			cost = document.getElementById("id_cost").value;
+			if (cost == ""){
+				$("#alert_message h4").text("Add cost of item.");
+				$("#alert_message").css('display','block');
+				return false;
+			}
+
+			var sel =document.getElementById("id_category").name;
+			sel = sel[selectedIndex].value;
+			alert(sel);
+
+			return true;
+			
+		}
+	</script>
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-4">
+				
+				<div id="alert_message" class="alert alert-danger alert-dismissible fade in" style="display:none">
+
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">×</span></button> 
+					<h4></h4> 
+				 </div>
+
+				 {% if error %}
+				 <div id="alert_message" class="alert alert-danger alert-dismissible fade in">
+
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">×</span></button> 
+					<h4>{{ error }}</h4> 
+				 </div>
+
+				 {% endif %}
+				
+				<form action="{% url 'kharch:add_item' %}" method="post" name="add_form" id="add_fm">
+					{% csrf_token %}
+					{{ form.as_p }}
+					<button class="btn  btn-warning btn-block " type="submit" alt="Add" id="add_item" onclick="return checkForm(this);">Add</button>
+					<a class="btn btn-info btn-block" href="{% url 'kharch:edit_item' %}" role="button">Edit</a>
+					<a class="btn btn-danger btn-block" href="{% url 'kharch:delete_item' %}" role="button">Delete</a>	
+				</form>
+			</div>
+			<div class="col-md-5"></div>
+		</div>
+	</div>
+	
+{% endblock %}
