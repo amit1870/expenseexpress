@@ -10,7 +10,6 @@ from itertools import chain
 
 def index(request):
 	user_id = get_current_user()
-	# print user_id
 
 	if request.method == "GET" and user_id is not None:
 		cash = Cash.objects.filter(loaded_by=user_id)
@@ -36,7 +35,6 @@ def index(request):
 		sex = int(sum(sex.values_list('price',flat=True)))
 
 		form1 = CapitalForm()
-		print cash
 		if cash > 0 :
 			remain = (cash - sum([roti, kapda, makan, other, sex]))*100/cash
 			gayab = 100 - remain
@@ -231,9 +229,6 @@ def history(request):
 		series.append("%s-%s-%d" %(item.category,item.name,data))
 
 	context['series'] = "<|>".join(series)
-	print series
-
-	
 
 	return render(request, 'kharch/history.html', context)
 
