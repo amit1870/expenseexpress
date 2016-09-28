@@ -22,7 +22,7 @@
 					
 					<select  onchange="filter_item(this,{{ cat_code }})" name="category">
 					{% for category in categories %}
-						<option value="{{ category.0 }}">{{ category.1 }}</option>
+						<option value="{{ category.id }}">{{ category.name }}</option>
 					{% endfor %}
 					</select>
 					<br/><br/>

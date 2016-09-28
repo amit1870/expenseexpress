@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Cash, Item, PAYMENT_MODE, Spent
+from .models import Cash, Spent, Category, Payment, Item
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from .forms import CapitalForm, ItemForm
 from django.core import urlresolvers
 from django.contrib.auth.decorators import login_required
 from utils.current_user import get_current_user
 from itertools import chain
+import datetime
 
 
 def index(request):
@@ -19,20 +20,24 @@ def index(request):
 
 		spent = Spent.objects.filter(spent_by=user_id)
 
-		roti = spent.filter(category='RT')
-		roti = int(sum(roti.values_list('price',flat=True)))
+		if len(spent):
+			roti = spent.filter(category=Category.objects.get(code="RT"))
+			roti = int(sum(roti.values_list('price',flat=True)))
 
-		kapda = spent.filter(category='KP')
-		kapda = int(sum(kapda.values_list('price',flat=True)))
+			kapda = spent.filter(category=Category.objects.get(code="KP"))
+			kapda = int(sum(kapda.values_list('price',flat=True)))
 
-		makan = spent.filter(category='MK')
-		makan = int(sum(makan.values_list('price',flat=True)))
+			makan = spent.filter(category=Category.objects.get(code="MK"))
+			makan = int(sum(makan.values_list('price',flat=True)))
 
-		other = spent.filter(category='OT')
-		other = int(sum(other.values_list('price',flat=True)))
+			other = spent.filter(category=Category.objects.get(code="OT"))
+			other = int(sum(other.values_list('price',flat=True)))
 
-		sex   = spent.filter(category="XX")
-		sex = int(sum(sex.values_list('price',flat=True)))
+			sex   = spent.filter(category=Category.objects.get(code="XX"))
+			sex = int(sum(sex.values_list('price',flat=True)))
+
+		else:
+			roti = kapda = makan = other = sex = 0
 
 		form1 = CapitalForm()
 		if cash > 0 :
@@ -42,7 +47,6 @@ def index(request):
 			remain = 0
 			gayab = 0
 		cash = cash - sum([roti, kapda, makan, other, sex])
-		
 		
 		context = {}
 		context['cash'] = cash
@@ -68,7 +72,6 @@ def index(request):
 					Cash.objects.create(capital=capital)
 
 		elif request.POST['hidden'] == 'Item':
-
 			total = 0.0
 			brought = request.POST.getlist('items[]')
 			for item in brought:
@@ -78,21 +81,25 @@ def index(request):
 			cash = sum(cash.values_list('capital',flat=True))
 
 			spent = Spent.objects.filter(spent_by=user_id)
+			
+			if len(spent):
+				roti = spent.filter(category=Category.objects.get(code="RT"))
+				roti = int(sum(roti.values_list('price',flat=True)))
 
-			roti = spent.filter(category='RT')
-			roti = int(sum(roti.values_list('price',flat=True)))
+				kapda = spent.filter(category=Category.objects.get(code="KP"))
+				kapda = int(sum(kapda.values_list('price',flat=True)))
 
-			kapda = spent.filter(category='KP')
-			kapda = int(sum(kapda.values_list('price',flat=True)))
+				makan = spent.filter(category=Category.objects.get(code="MK"))
+				makan = int(sum(makan.values_list('price',flat=True)))
 
-			makan = spent.filter(category='MK')
-			makan = int(sum(makan.values_list('price',flat=True)))
+				other = spent.filter(category=Category.objects.get(code="OT"))
+				other = int(sum(other.values_list('price',flat=True)))
 
-			other = spent.filter(category='OT')
-			other = int(sum(other.values_list('price',flat=True)))
+				sex   = spent.filter(category=Category.objects.get(code="XX"))
+				sex = int(sum(sex.values_list('price',flat=True)))
 
-			sex   = spent.filter(category="XX")
-			sex = int(sum(sex.values_list('price',flat=True)))
+			else:
+				roti = kapda = makan = other = sex = 0
 
 			if total > (cash - (roti + kapda + makan + other + sex) ):
 				url = urlresolvers.reverse('kharch:buy_error')
@@ -104,13 +111,13 @@ def index(request):
 				category = obj.category
 				added_by = obj.added_by
 				append = request.POST.getlist('append[]')
-				
+				date = request.POST["buy_date_"+item]
+				date = datetime.datetime.strptime(date, '%m/%d/%Y').strftime('%Y-%m-%d')
 				if item in append :
-					print "append %s" %item
 					obj.inherited_by.add(user_id)
 					obj.save()
 				
-				Spent.objects.create(item=item, category=category, payment=payment, price=request.POST[item])
+				Spent.objects.create(item=obj, category=Category.objects.get(id=obj.category_id), payment=Payment.objects.get(code=payment), price=request.POST[item], date=date)
 
 		return HttpResponseRedirect(".")
 
@@ -132,8 +139,9 @@ def add_item(request):
 			name = request.POST['name']
 			cost = request.POST['cost']
 			category = request.POST['category']
-			Item.objects.create(name=name.capitalize(), cost=cost, category=category)
 
+			Item.objects.create(name=name.capitalize(), cost=cost, category=Category.objects.get(id=category))
+			
 			url = urlresolvers.reverse('kharch:add_item')
 			return HttpResponseRedirect(url)
 		else:
@@ -150,14 +158,9 @@ def edit_item(request):
 	if request.method == "GET":
 		form = ItemForm()
 		items = Item.objects.filter(added_by=user_id)
-		categories = Item.CATEGORY_CHOICES
-		cat_code = [category[0] for category in categories]
 		context = {}
 		context['form'] = form
 		context['items'] = items
-		context['categories'] = categories
-		context['cat_code'] = cat_code
-		context['payment'] = PAYMENT_MODE
 		return render(request, 'kharch/edit_item.html', context)
 
 	elif request.method == "POST":
@@ -167,10 +170,16 @@ def edit_item(request):
 			name = request.POST[item] 
 			cost = request.POST[item+"_cost"]
 			category = request.POST[item+"_sel"]
-			obj.name = name
-			obj.cost = cost
-			obj.category = category
-			obj.save()
+			try :
+				exists = Item.objects.get(name=name)
+				exists = True
+			except:
+				exists = False
+			if not exists:
+				obj.name = name
+				obj.cost = cost
+				obj.category = Category.objects.get(code=category)
+				obj.save()
 
 		url = urlresolvers.reverse('kharch:edit_item')
 		return HttpResponseRedirect(url)
@@ -270,5 +279,29 @@ def get_item(request,item_name):
 	context['item'] = item
 	if request.method == "GET":
 		return render(request, 'kharch/item.html', context)
+
+@login_required
+def show_mobile(request):
+	context = {}
+	spents = Spent.objects.filter(category=Category.objects.get(code="OT"))
+	spents = spents.filter(item__startswith="MR")
+	context['spents'] = spents.order_by('-id')[:5]
+	status = []
+	for spent in context['spents'] :
+		delta = datetime.date.today() - spent.date
+		if delta.days < 25 :
+			status.append("Green")
+		elif delta.days in range(25,29):
+			status.append("Yellow")
+		else:
+			status.append("Red")
+
+	context['status'] = status
+	context['today'] = datetime.date.today()
+
+	if request.method == "GET":
+		return render(request, 'kharch/mobile.html', context)
+
+
 
 

@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^search-item/$', views.search_item, name='search_item'),
     url(r'^show-items/$', views.show_items, name='show_items'),
     url(r'^history/$', views.history, name='history'),
-    url(r'^buy-error/$', views.buy_error, name='buy_error'),
+    url(r'^mobile/$', views.show_mobile, name='mobile'),
     url(r'^item/(?P<item_name>[-\w]+)/$', views.get_item,name="get_item"),
 
 ]

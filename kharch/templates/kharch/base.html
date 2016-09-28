@@ -12,10 +12,13 @@
     <link rel="stylesheet" href="{% static 'kharch/css/navbar-fixed-top.css' %}"/>
     <link rel="stylesheet" href="{% static 'kharch/css/signin.css' %}"/>
     <link rel="stylesheet" href="{% static 'kharch/css/theme.css' %}"/>
+    <link rel="stylesheet" href="{% static 'kharch/css/daterangepicker.css' %}"/>
 
     <script type="text/javascript" src="{% static 'kharch/js/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'kharch/js/bootstrap.js' %}"></script>
     <script type="text/javascript" src="{% static 'kharch/js/kharch.js' %}"></script>
+    <script type="text/javascript" src="{% static 'kharch/js/moment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'kharch/js/daterangepicker.js' %}"></script>
 
     {% block title %} {% endblock %}
     {% block css %} {% endblock %}
@@ -54,6 +57,7 @@
         </ul>
       	<ul class="nav navbar-nav navbar-right">
           {% if request.user.username %}
+          <li><a href="{% url 'kharch:mobile' %}">MobileExpress</a></li>
       		<li><a href="{% url 'accounts:dashboard' %}">{{ request.user.username|capfirst }}</a></li>
           <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
           {% else %}

@@ -42,7 +42,8 @@
 									<option value="{{ pay.0 }}">{{ pay.1 }}</option>
 								{% endfor %}
 							</select>
-							
+							<input type="text" name="buy_date_{{item.name}}" maxlength="10" size="10" />
+
 							{% if request.user != item.added_by and request.user != item|inherited_by %}
 								<input type="checkbox" name="append[]" value="{{ item.name }}" checked>Append
 							{% endif %}
@@ -69,5 +70,15 @@
 			
 		</div>
 </div>
+
+<script type="text/javascript">
+	$(function() {
+		    $('input[name^="buy_date"]').daterangepicker({
+		        singleDatePicker: true,
+		        showDropdowns: true
+		    });
+		});
+	
+</script>
 
 {% endblock %}

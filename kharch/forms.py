@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cash, Item, PAYMENT_MODE
+from .models import Cash, Item
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 class CapitalForm(forms.Form):
@@ -31,7 +31,6 @@ class ItemForm(forms.ModelForm):
 		self.fields['name'].widget.attrs.update({'class' : 'form-control'})
 		self.fields['cost'].widget.attrs.update({'class' : 'form-control'})
 		self.fields['category'].widget.attrs.update({'class' : 'form-control'})
-
 		self.fields['name'].widget.attrs.update({'placeholder' : 'Item'})
 		self.fields['cost'].widget.attrs.update({'placeholder' : 'Cost'})
 

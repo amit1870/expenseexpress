@@ -24,8 +24,9 @@
 					{% csrf_token %}
 					
 					<select  onchange="filter_item(this,{{ cat_code }})" name="category">
+						<option value="-1">Select any Category</option>
 					{% for category in categories %}
-						<option value="{{ category.0 }}">{{ category.1 }}</option>
+						<option value="{{ category.id }}">{{ category.name }}</option>
 					{% endfor %}
 					</select>
 					<br/><br/>
@@ -42,10 +43,10 @@
 
 						{% for category in categories %}
 							
-							{% if item.category == category.0  %}
-								<option value="{{ category.0 }}" selected>{{ category.1 }}</option>
+							{% if item.category == category.code  %}
+								<option value="{{ category.id }}" selected>{{ category.name }}</option>
 							{% else %}
-								<option value="{{ category.0 }}">{{ category.1 }}</option>
+								<option value="{{ category.id }}">{{ category.name }}</option>
 							{% endif %}
 						{% endfor %}
 						</select>

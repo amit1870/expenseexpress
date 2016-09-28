@@ -1,4 +1,4 @@
-from kharch.models import Item, PAYMENT_MODE
+from kharch.models import Item, Payment, Category
 from expenseexpress import settings
 
 def expenseexpress(request):
@@ -7,8 +7,8 @@ def expenseexpress(request):
 		'site_name' : settings.SITE_NAME,
 		'meta_keywords' : settings.META_KEYWORDS,
 		'meta_description' : settings.META_DESCRIPTION,
-		'cat_code': [category[0] for category in Item.CATEGORY_CHOICES],
-		'categories': Item.CATEGORY_CHOICES,
-		'payment': PAYMENT_MODE,
+		'cat_code': [category.code for category in Category.objects.all()],
+		'categories': [category for category in Category.objects.all()],
+		'payment': [payment for payment in Payment.objects.all()],
 	}
 	

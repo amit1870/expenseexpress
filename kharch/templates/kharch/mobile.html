@@ -1,0 +1,68 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+{% load customtags %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-responsive">
+		          <table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>#</th>
+		                <th>Name</th>
+		                <th>Cost</th>
+		                <th>Date</th>
+		                <th>Status</th>
+		                
+		              </tr>
+		            </thead>
+		            <tbody>
+		            {% for spent in spents %}
+			            <tr>
+			            	<td>{{forloop.counter}}</td>
+			                <td><a href="{% url 'kharch:get_item'  item_name=spent.item %}"> {{spent.item}}</a></td>
+			                <td>{{spent.price}}</td>
+			                <td>{{spent.date}}</td>
+			                
+			                <td>
+			                	{% if status|status:forloop.counter0 == "Green"%}
+			                		<button class="btn btn-success btn-xs" type="submit" alt="Green" id="green">Green</button>
+			                	{% endif %}
+
+			                	{% if status|status:forloop.counter0 == "Yellow"%}
+			                		<button class="btn btn-warning btn-xs" type="submit" alt="Yellow" id="yellow">Yellow</button>
+			                	{% endif %}
+
+			                	{% if status|status:forloop.counter0 == "Red"%}
+			                		<button class="btn btn-danger btn-xs" type="submit" alt="Red" id="red">Red</button>
+			                	{% endif %}
+
+
+			                </td>
+		              </tr>
+
+		            {% endfor %}
+		            </tbody>
+		          </table>
+		        </div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
