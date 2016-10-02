@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^history/$', views.history, name='history'),
     url(r'^mobile/$', views.show_mobile, name='mobile'),
     url(r'^item/(?P<item_name>[-\w]+)/$', views.get_item,name="get_item"),
+    url(r'^pay-due/$', views.pay_due, name='pay_due'),
 
 
 ]

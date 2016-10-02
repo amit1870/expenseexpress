@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm, UploadFileForm, ModelFormWithFileField
 from . import profile
 from .models import Document
-from kharch.models import Cash, Item, Spent, Category
+from kharch.models import Cash, Item, Spent, Category, Payment
 from utils.current_user import get_current_user
 
 
@@ -61,7 +61,12 @@ def dashboard(request, template_name="accounts/registration/dashboard.html"):
 
 	context['spent'] = sum([roti,kapda,makan,other,sex])
 
-	context['remain'] = context['total'] - context['spent']
+	credit = spent.filter(payment=Payment.objects.get(code="CR")).filter(paid=False)
+	credit = int(sum(credit.values_list('price',flat=True)))
+
+	context['credit'] = credit
+
+	context['remain'] = context['total'] - context['spent'] + context['credit']
 
 	return render(request, template_name, context)
 
@@ -113,3 +118,4 @@ def logging_error(request):
 	context = {}
 	if request.method == "GET":
 		return render(request, 'registration/login_error.html', context)
+

@@ -1,4 +1,4 @@
-from kharch.models import Item, Payment, Category
+from kharch.models import Item, Payment, Category, PaymentMethod
 from expenseexpress import settings
 
 def expenseexpress(request):
@@ -10,5 +10,6 @@ def expenseexpress(request):
 		'cat_code': [str(category.code) for category in Category.objects.all()],
 		'categories': [category for category in Category.objects.all()],
 		'payment': [payment for payment in Payment.objects.all()],
+		'payment_method': [method for method in PaymentMethod.objects.all()]
 	}
 	

@@ -42,8 +42,19 @@
                       </div>
                       <div class="modal-body">
                         <input type="text" name="cost" value="{{spent.price}}" class="form-control"><br>
-                        <input type="text" name="spent_date_{{spent.id}}" value="{{spent.date}}" class="form-control" /><br>
-                        <input type="text" name="validity" placeholder="in days" value="{{spent.validity}}" class="form-control" />
+                        <input type="text" name="spent_date_{{spent.id}}" value="{{spent.date|date:'Y-m-d'}}" class="form-control" placeholder="YYYY-mm-dd" /><br>
+                        <input type="text" name="validity" placeholder="in days" value="{{spent.validity}}" class="form-control" /><br>
+                        <select name="{{spent.id}}_sel" class="form-control">
+
+                        {% for pay in payment %}
+                          
+                          {% if spent.payment.code == pay.code  %}
+                            <option value="{{ pay.code }}" selected>{{ pay.name }}</option>
+                          {% else %}
+                            <option value="{{ pay.code }}">{{ pay.name }}</option>
+                          {% endif %}
+                        {% endfor %}
+                        </select>
                         <input type="hidden" name="dashboard" value="{{spent.id}}">
                       </div>
                       <div class="modal-footer">
@@ -68,6 +79,11 @@
             </tbody>
           </table>
         </div>
+        <h2>Sum: {{ total }} </h2>
+        <h2>Rem: {{ remain }} </h2>
+        <h2>Due: {{ credit }} </h2>
+          <a class="btn btn-success" href="{% url 'kharch:pay_due' %}" role="button">Pay</a>
+
 		</div>
 		<div class="col-md-3">
 		<h2>Namste {{ request.user.username|capfirst }}</h2>
@@ -78,8 +94,7 @@
 			&nbsp;&nbsp;&nbsp;
 			<a class="btn btn-success btn-xs" href="{% url 'accounts:upload_file' %}" role="button">Change</a>
 		</div>
-    <h2>Sum: {{ total }} </h2>
-    <h2>Rem: {{ remain }} </h2>
+    
 	</div>
 </div>
 {% endblock %}

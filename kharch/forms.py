@@ -47,7 +47,7 @@ class ItemForm(forms.ModelForm):
 
 	def save(self, commit=True):
 		item = super(ItemForm, self).save(commit=False)
-		item.set_name(self.cleaned_data["name"])
+		item.set_name(self.cleaned_name["name"])
 		if commit:
 			item.save()
 		return item

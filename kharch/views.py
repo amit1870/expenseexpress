@@ -116,8 +116,8 @@ def index(request):
 				if item in append :
 					obj.inherited_by.add(user_id)
 					obj.save()
-				
-				Spent.objects.create(item=obj, category=Category.objects.get(id=obj.category_id), payment=Payment.objects.get(code=payment), price=request.POST[item], date=date)
+				paid = False if payment == "CR" else True
+				Spent.objects.create(item=obj, paid=paid, category=Category.objects.get(id=obj.category_id), payment=Payment.objects.get(code=payment), price=request.POST[item], date=date)
 
 		return HttpResponseRedirect(".")
 
@@ -193,28 +193,31 @@ def edit_spent(request):
 
 	else:
 		print request.POST
-		if request.POST['dashboard']:
-			spent = Spent.objects.get(pk=int(request.POST['dashboard']))
-			spent_date = request.POST['spent_date_%s' %request.POST['dashboard']].split("/")
-			# year,day,month = int(spent_date[-1]),int(spent_date[1]),int(spent_date[0])
-			# spent.date = datetime.date(year,month,day)
-			print spent.date
-			# spent.validity = int(request.POST['validity'])
+		if "dashboard" in request.POST:
+			spent_id = int(request.POST['dashboard'])
+			spent = Spent.objects.get(pk=spent_id)
+			spent_date = request.POST['spent_date_%s' %request.POST['dashboard']].split("-")
+			year,month,day = [int(part) for part in spent_date]
+			spent.date = datetime.date(year,month,day)
+			spent.validity = int(request.POST['validity']) if request.POST['validity'] != "NA" else "NA"
 			spent.cost = float(request.POST['cost'])
+			spent.payment = Payment.objects.get(code=request.POST['%d_sel' % spent_id])
 			spent.save()
 			url = urlresolvers.reverse('accounts:dashboard')
 			return HttpResponseRedirect(url)
-
-		spent = Spent.objects.get(pk=int(request.POST['hidden']))
-		spent_date = request.POST['spent_date_%s' %request.POST['hidden']].split("/")
-		# year,day,month = int(spent_date[-1]),int(spent_date[1]),int(spent_date[0])
-		# spent.date = datetime.date(year,month,day)
-		print spent.date
-		# spent.validity = int(request.POST['validity'])
-		spent.cost = float(request.POST['cost'])
-		spent.save()
-		url = urlresolvers.reverse('kharch:mobile')
-		return HttpResponseRedirect(url)
+		else:
+			spent_id = int(request.POST['hidden'])
+			spent = Spent.objects.get(pk=spent_id)
+			spent_date = request.POST['spent_date_%s' %request.POST['hidden']].split("-")
+			year,month,day = [int(part) for part in spent_date]
+			spent.date = datetime.date(year,month,day)
+			print spent.date
+			spent.validity = int(request.POST['validity']) if request.POST['validity'] != "NA" else "NA"
+			spent.cost = float(request.POST['cost'])
+			spent.payment = Payment.objects.get(code=request.POST['%d_sel' % spent_id])
+			spent.save()
+			url = urlresolvers.reverse('kharch:mobile')
+			return HttpResponseRedirect(url)
 
 @login_required
 def delete_item(request):
@@ -229,12 +232,26 @@ def delete_item(request):
 
 	elif request.method == "POST":
 		edited = request.POST.getlist('items[]')
+		flag = False
 		for item in edited:
-			obj = Item.objects.get(name=item)
-			obj.delete()
+			spent = Spent.objects.filter(item=Item.objects.get(name=item))
+			if len(spent) < 1:
+				obj = Item.objects.get(name=item)
+				obj.delete()
+			else:
+				flag = True
 
-		url = urlresolvers.reverse('kharch:delete_item')
-		return HttpResponseRedirect(url)
+		if flag:
+			form = ItemForm()
+			items = Item.objects.filter(added_by=user_id)
+			context = {}
+			context['form'] = form
+			context['error'] = "Already purchased items cannot be deleted. Contact Admin"
+			context['items'] = items
+			return render(request, 'kharch/delete_item.html', context)
+		else:
+			url = urlresolvers.reverse('kharch:delete_item')
+			return HttpResponseRedirect(url)
 	
 @login_required
 def history(request):
@@ -314,19 +331,23 @@ def show_mobile(request):
 	status = []
 	for spent in context['spents'] :
 		delta = datetime.date.today() - spent.date
-		if delta.days < 25 :
+		validity = 0 if spent.validity == "NA" else int(spent.validity)
+		print delta.days - validity
+		if validity - delta.days  > 3 :
 			status.append("Green")
-		elif delta.days in range(25,29):
+		elif validity - delta.days in range(1,4):
 			status.append("Yellow")
 		else:
 			status.append("Red")
 
 	context['status'] = status
-	context['today'] = datetime.date.today()
 
 	if request.method == "GET":
 		return render(request, 'kharch/mobile.html', context)
 
 
+def pay_due(request):
+	context = {}
 
-
+	if request.method == "GET":
+		return render(request, 'kharch/pay_due.html', context)

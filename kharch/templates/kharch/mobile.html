@@ -47,8 +47,20 @@
 						        </div>
 						        <div class="modal-body">
 						        	<input type="text" name="cost" value="{{spent.price}}" class="form-control"><br>
-						        	<input type="text" name="spent_date_{{spent.id}}" value="{{spent.date}}" class="form-control" /><br>
-						        	<input type="text" name="validity" placeholder="in days" value="{{spent.validity}}" class="form-control" />
+						        	<input type="text" name="spent_date_{{spent.id}}" value="{{spent.date|date:'Y-m-d'}}" class="form-control" placeholder="YYYY-mm-dd" /><br>
+						        	<input type="text" name="validity" placeholder="in days" value="{{spent.validity}}" class="form-control" /><br>
+						        	<select name="{{spent.id}}_sel" class="form-control">
+
+                        {% for pay in payment %}
+                          
+                          {% if spent.payment.code == pay.code  %}
+                            <option value="{{ pay.code }}" selected>{{ pay.name }}</option>
+                          {% else %}
+                            <option value="{{ pay.code }}">{{ pay.name }}</option>
+                          {% endif %}
+                        {% endfor %}
+                        </select>
+
 						        	<input type="hidden" name="hidden" value="{{spent.id}}">
 						        </div>
 						        <div class="modal-footer">

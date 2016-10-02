@@ -12,8 +12,31 @@
 {% block js %}
 <script type="text/javascript">
 	function check(){
-		x = $("#delete_all").value;
-		alert(x);
+		var element = document.getElementById("category");
+		var category = element.options[element.selectedIndex].value;
+
+		if ($("#delete_all").is(":checked")) {
+			
+			var aa = document.getElementsByTagName("input");
+			for (var i =0; i < aa.length; i++){
+				if (category == "SL")
+					aa[i].checked = true;
+				else if (aa[i].type == 'checkbox' && aa[i].id.split("_")[0] == category)
+					aa[i].checked = true;
+				
+
+			}
+		} 
+
+		else {
+			var aa = document.getElementsByTagName("input");
+			for (var i =0; i < aa.length; i++){
+				if (aa[i].type == 'checkbox')
+					aa[i].checked = false;
+
+			}
+		}
+		
 	}
 
 </script>
@@ -24,22 +47,30 @@
 		<div class="row">
 			<div class="col-md-3"></div>
 			<div class="col-md-5">
+				{% if error %}
+				<div id="alert_message" class="alert alert-danger alert-dismissible fade in">
+
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">×</span></button> 
+					<h4>{{ error }}</h4>
+				</div>
+				{% endif %}
 				<form method="post" action="{% url 'kharch:delete_item' %}">
 					{% csrf_token %}
 					
-					<select  onchange="filter_item(this,{{ cat_code }})" name="category">
+					<select  onchange="filter_item(this,{{ cat_code }})" name="category" id="category">
 						<option value="SL">Select any Category</option>
 					{% for category in categories %}
 						<option value="{{ category.code }}">{{ category.name }}</option>
 					{% endfor %}
 					</select>
-					<input type="checkbox" name="delete_all" id="delete_all" onchange="check()">&nbsp;All
+					<input type="checkbox" name="delete_all" id="delete_all" onclick="check()">&nbsp;All
 					<br/><br/>
 					{% for item in items %}
 					
 					<div class="{{item.category.code}}" >
 
-						<input type="checkbox" name="items[]" value="{{ item.name }}">
+						<input type="checkbox" name="items[]" value="{{ item.name }}" id="{{item.category.code}}_{{item.id}}">
 						
 						<input type="button" class="btn btn-primary btn-xs" name="{{ item.name }}" value="{{ item.name }}"/>&nbsp;&nbsp;
 						<input type="text" name="{{ item.name }}_cost" value="{{ item.cost }}" maxlength="6" size="6" readonly />

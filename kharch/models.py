@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from utils.current_user import get_current_user
+from django.db.models import signals
+from django.dispatch import receiver
 
 class Payment(models.Model):
 	name = models.CharField(max_length=10,blank=False, unique=True)
@@ -8,6 +10,14 @@ class Payment(models.Model):
 
 	def __str__(self):
 		return "%s" % self.name
+
+class PaymentMethod(models.Model):
+	url = models.URLField(max_length=200,blank=True)
+	code = models.CharField(max_length=10,blank=False,unique=True)
+
+	def __str__(self):
+		return self.code
+
 
 class Cash(models.Model):
 	loaded_by = models.ForeignKey(User, default=get_current_user)
@@ -42,13 +52,10 @@ class Spent(models.Model):
 	category = models.ForeignKey(Category)
 	price 	= models.DecimalField(max_digits=5,decimal_places=1)
 	date 	= models.DateField(blank=False)
-	reason 	= models.CharField(max_length=255, blank=True)
+	paid 	= models.BooleanField(default=True)
 	payment	= models.ForeignKey(Payment)
 	validity = models.CharField(max_length=5,default="NA")
 	needed 	= models.BooleanField(default=True)
 
 	def __str__(self):
 		return "%s %s" % (self.item, self.price)
-
-
-
