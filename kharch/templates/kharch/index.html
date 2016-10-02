@@ -41,7 +41,6 @@
 			</div>
 			<div class="col-md-5">
 				<canvas id="can" width="400" height="400"></canvas>
-				<a class="btn btn-default btn-xs" href="{% url 'kharch:history' %}" role="button">History</a>
 			</div>
 			<div class="col-md-4">
 				<form method="post" action=".">
@@ -49,13 +48,12 @@
 					<select  onchange="filter_item(this,{{ cat_code }})">
 					<option value="SL">Select any Category</option>
 					{% for category in categories %}
-
 						<option value="{{ category.code }}">{{ category.name }}</option>
 					{% endfor %}
 					</select>
 					<br/><br/>
 					{% for item in items %}
-					<div class="{{item.category}}" >
+					<div class="{{item.category.code}}" >
 						<input type="checkbox" name="items[]" value="{{ item.name }}">
 						<button class="btn  btn-primary btn-xs" type="button" alt="{{ item.name }}" id="{{ item.id }}">{{ item.name }}</button>
 						<input type="text" name="{{ item.name }}" value="{{ item.cost }}" maxlength="6" size="6" />

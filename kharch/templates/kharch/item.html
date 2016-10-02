@@ -29,7 +29,7 @@
 
 						<select name="{{ item.name }}_sel">
 							{% for pay in payment %}
-								<option value="{{ pay.0 }}">{{ pay.1 }}</option>
+								<option value="{{ pay.code }}">{{ pay.name }}</option>
 							{% endfor %}
 						</select>
 						<input type="hidden" value="Item" name="hidden">

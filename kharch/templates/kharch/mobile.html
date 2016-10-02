@@ -28,17 +28,43 @@
 		                <th>Name</th>
 		                <th>Cost</th>
 		                <th>Date</th>
+		                <th>Validity</th>
 		                <th>Status</th>
 		                
 		              </tr>
 		            </thead>
 		            <tbody>
 		            {% for spent in spents %}
+		            <form method="post" action="{% url 'kharch:edit_spent' %}">
+		            	{% csrf_token %}
+		            	<div id="{{spent.id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="{{spent.item}}">
+						    <div class="modal-dialog">
+						      <div class="modal-content">
+
+						        <div class="modal-header">
+						          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						          <h4 class="modal-title" id="{{spent.item}}">{{spent.item}}</h4>
+						        </div>
+						        <div class="modal-body">
+						        	<input type="text" name="cost" value="{{spent.price}}" class="form-control"><br>
+						        	<input type="text" name="spent_date_{{spent.id}}" value="{{spent.date}}" class="form-control" /><br>
+						        	<input type="text" name="validity" placeholder="in days" value="{{spent.validity}}" class="form-control" />
+						        	<input type="hidden" name="hidden" value="{{spent.id}}">
+						        </div>
+						        <div class="modal-footer">
+						          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						          <button type="submit" class="btn btn-primary">Save</button>
+						        </div>
+						      </div>
+						    </div>
+						  </div>
+						  </form>
 			            <tr>
 			            	<td>{{forloop.counter}}</td>
 			                <td><a href="{% url 'kharch:get_item'  item_name=spent.item %}"> {{spent.item}}</a></td>
 			                <td>{{spent.price}}</td>
 			                <td>{{spent.date}}</td>
+			                <td>{{spent.validity}}</td>
 			                
 			                <td>
 			                	{% if status|status:forloop.counter0 == "Green"%}
@@ -53,6 +79,8 @@
 			                		<button class="btn btn-danger btn-xs" type="submit" alt="Red" id="red">Red</button>
 			                	{% endif %}
 
+			                	<button class="btn btn-info btn-xs" data-toggle="modal" data-target="#{{spent.id}}">Edit</button>
+
 
 			                </td>
 		              </tr>
@@ -64,5 +92,14 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		// $(function() {
+		//     $('input[name^="spent_date"]').daterangepicker({
+		//         singleDatePicker: true,
+		//         showDropdowns: true,
+		        
+		//     });
+		// });
+	</script>
 
 {% endblock %}

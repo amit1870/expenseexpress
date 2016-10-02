@@ -185,6 +185,38 @@ def edit_item(request):
 		return HttpResponseRedirect(url)
 
 @login_required
+def edit_spent(request):
+	user_id = get_current_user()
+	if request.method == "GET":
+		context = {}
+		return render(request,'kharch/mobile.html',context)
+
+	else:
+		print request.POST
+		if request.POST['dashboard']:
+			spent = Spent.objects.get(pk=int(request.POST['dashboard']))
+			spent_date = request.POST['spent_date_%s' %request.POST['dashboard']].split("/")
+			# year,day,month = int(spent_date[-1]),int(spent_date[1]),int(spent_date[0])
+			# spent.date = datetime.date(year,month,day)
+			print spent.date
+			# spent.validity = int(request.POST['validity'])
+			spent.cost = float(request.POST['cost'])
+			spent.save()
+			url = urlresolvers.reverse('accounts:dashboard')
+			return HttpResponseRedirect(url)
+
+		spent = Spent.objects.get(pk=int(request.POST['hidden']))
+		spent_date = request.POST['spent_date_%s' %request.POST['hidden']].split("/")
+		# year,day,month = int(spent_date[-1]),int(spent_date[1]),int(spent_date[0])
+		# spent.date = datetime.date(year,month,day)
+		print spent.date
+		# spent.validity = int(request.POST['validity'])
+		spent.cost = float(request.POST['cost'])
+		spent.save()
+		url = urlresolvers.reverse('kharch:mobile')
+		return HttpResponseRedirect(url)
+
+@login_required
 def delete_item(request):
 	user_id = get_current_user()
 	if request.method == "GET":
@@ -213,19 +245,19 @@ def history(request):
 	
 	spent = Spent.objects.filter(spent_by=user_id)
 
-	roti = spent.filter(category='RT')
+	roti = spent.filter(category=Category.objects.get(code="RT"))
 	roti = int(sum(roti.values_list('price',flat=True)))
 
-	kapda = spent.filter(category='KP')
+	kapda = spent.filter(category=Category.objects.get(code="KP"))
 	kapda = int(sum(kapda.values_list('price',flat=True)))
 
-	makan = spent.filter(category='MK')
+	makan = spent.filter(category=Category.objects.get(code="MK"))
 	makan = int(sum(makan.values_list('price',flat=True)))
 
-	other = spent.filter(category='OT')
+	other = spent.filter(category=Category.objects.get(code="OT"))
 	other = int(sum(other.values_list('price',flat=True)))
 
-	sex   = spent.filter(category="XX")
+	sex   = spent.filter(category=Category.objects.get(code="XX"))
 	sex = int(sum(sex.values_list('price',flat=True)))
 
 	spent_dict = {'RT':roti, 'KP':kapda, 'MK':makan, 'OT':other, 'XX': sex}
@@ -233,12 +265,12 @@ def history(request):
 	series = []
 	for item in items:
 
-		data = int(sum(spent.filter(item=item.name).values_list('price',flat=True)))
+		data = int(sum(spent.filter(item=Item.objects.get(name=item.name)).values_list('price',flat=True)))
 		
-		series.append("%s-%s-%d" %(item.category,item.name,data))
+		series.append("%s-%s-%d" %(item.category.code,item.name,data))
 
 	context['series'] = "<|>".join(series)
-
+	print context['series']
 	return render(request, 'kharch/history.html', context)
 
 
@@ -266,13 +298,6 @@ def show_items(request):
 	else:
 		return render(request, 'kharch/show_items.html', context)		
 
-@login_required
-def buy_error(request):
-	context = {}
-	if request.method == "GET":
-		return render(request, 'kharch/error.html', context)
-
-
 def get_item(request,item_name):
 	context = {}
 	item = Item.objects.get(name=item_name)
@@ -284,7 +309,7 @@ def get_item(request,item_name):
 def show_mobile(request):
 	context = {}
 	spents = Spent.objects.filter(category=Category.objects.get(code="OT"))
-	spents = spents.filter(item__startswith="MR")
+	spents = spents.filter(item__name__istartswith="MR")
 	context['spents'] = spents.order_by('-id')[:5]
 	status = []
 	for spent in context['spents'] :

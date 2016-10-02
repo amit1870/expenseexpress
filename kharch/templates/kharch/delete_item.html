@@ -10,6 +10,13 @@
 {% endblock %}
 	
 {% block js %}
+<script type="text/javascript">
+	function check(){
+		x = $("#delete_all").value;
+		alert(x);
+	}
+
+</script>
 {% endblock %}
 
 {% block site_wrapper %}
@@ -21,14 +28,16 @@
 					{% csrf_token %}
 					
 					<select  onchange="filter_item(this,{{ cat_code }})" name="category">
+						<option value="SL">Select any Category</option>
 					{% for category in categories %}
-						<option value="{{ category.id }}">{{ category.name }}</option>
+						<option value="{{ category.code }}">{{ category.name }}</option>
 					{% endfor %}
 					</select>
+					<input type="checkbox" name="delete_all" id="delete_all" onchange="check()">&nbsp;All
 					<br/><br/>
 					{% for item in items %}
 					
-					<div class="{{item.category}}" >
+					<div class="{{item.category.code}}" >
 
 						<input type="checkbox" name="items[]" value="{{ item.name }}">
 						
@@ -36,7 +45,7 @@
 						<input type="text" name="{{ item.name }}_cost" value="{{ item.cost }}" maxlength="6" size="6" readonly />
 						&nbsp;&nbsp;
 						<select name="{{item.name}}_sel">
-							<option value="{{ item.category }}">{{ item.category }}</option>
+							<option value="{{ item.category.code }}">{{ item.category.name }}</option>
 						</select>
 
 						<br/><br/>

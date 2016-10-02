@@ -59,6 +59,7 @@
           {% if request.user.username %}
           <li><a href="{% url 'kharch:mobile' %}">MobileExpress</a></li>
       		<li><a href="{% url 'accounts:dashboard' %}">{{ request.user.username|capfirst }}</a></li>
+          <li><a href="{% url 'kharch:history' %}">History</a></li>
           <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
           {% else %}
           <li><a href="{% url 'accounts:login' %}">Login</a></li>

@@ -90,14 +90,15 @@ function plot_graph(objects, cat) {
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<select  onchange="filter_graph(this,{{ cat_code }})">
+				<option value="SL">Select any Category</option>
 				{% for category in categories %}
-					<option value="{{ category.0 }}">{{ category.1 }}</option>
+					<option value="{{ category.code }}">{{ category.name }}</option>
 				{% endfor %}
 			</select>
 			<br><br>
 			{% for cat in cat_code %}
 				{% if cat != "SL" %}
-
+				
 				<div id="{{ cat }}" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto; display:block"></div>
 				{% endif %}
 			{% endfor %}

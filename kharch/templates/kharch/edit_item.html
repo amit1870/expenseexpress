@@ -24,15 +24,15 @@
 					{% csrf_token %}
 					
 					<select  onchange="filter_item(this,{{ cat_code }})" name="category">
-						<option value="-1">Select any Category</option>
+						<option value="SL">Select any Category</option>
 					{% for category in categories %}
-						<option value="{{ category.id }}">{{ category.name }}</option>
+						<option value="{{ category.code }}">{{ category.name }}</option>
 					{% endfor %}
 					</select>
 					<br/><br/>
 					{% for item in items %}
 					
-					<div class="{{item.category}}" >
+					<div class="{{item.category.code}}" >
 
 						<input type="checkbox" name="items[]" value="{{ item.name }}">
 						
@@ -43,10 +43,10 @@
 
 						{% for category in categories %}
 							
-							{% if item.category == category.code  %}
-								<option value="{{ category.id }}" selected>{{ category.name }}</option>
+							{% if item.category.code == category.code  %}
+								<option value="{{ category.code }}" selected>{{ category.name }}</option>
 							{% else %}
-								<option value="{{ category.id }}">{{ category.name }}</option>
+								<option value="{{ category.code }}">{{ category.name }}</option>
 							{% endif %}
 						{% endfor %}
 						</select>

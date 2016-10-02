@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm, UploadFileForm, ModelFormWithFileField
 from . import profile
 from .models import Document
-from kharch.models import Cash, Item, Spent
+from kharch.models import Cash, Item, Spent, Category
 from utils.current_user import get_current_user
 
 
@@ -44,19 +44,19 @@ def dashboard(request, template_name="accounts/registration/dashboard.html"):
 
 	context['spent_on'] = spent
 
-	roti = spent.filter(category='RT')
+	roti = spent.filter(category=Category.objects.get(code='RT'))
 	roti = int(sum(roti.values_list('price',flat=True)))
 
-	kapda = spent.filter(category='KP')
+	kapda = spent.filter(category=Category.objects.get(code='KP'))
 	kapda = int(sum(kapda.values_list('price',flat=True)))
 
-	makan = spent.filter(category='MK')
+	makan = spent.filter(category=Category.objects.get(code='MK'))
 	makan = int(sum(makan.values_list('price',flat=True)))
 
-	other = spent.filter(category='OT')
+	other = spent.filter(category=Category.objects.get(code='OT'))
 	other = int(sum(other.values_list('price',flat=True)))
 
-	sex   = spent.filter(category="XX")
+	sex   = spent.filter(category=Category.objects.get(code='XX'))
 	sex = int(sum(sex.values_list('price',flat=True)))
 
 	context['spent'] = sum([roti,kapda,makan,other,sex])

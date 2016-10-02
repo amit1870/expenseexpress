@@ -44,7 +44,7 @@ class Spent(models.Model):
 	date 	= models.DateField(blank=False)
 	reason 	= models.CharField(max_length=255, blank=True)
 	payment	= models.ForeignKey(Payment)
-	where 	= models.CharField(max_length=100, blank=True)
+	validity = models.CharField(max_length=5,default="NA")
 	needed 	= models.BooleanField(default=True)
 
 	def __str__(self):
