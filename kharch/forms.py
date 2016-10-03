@@ -11,8 +11,6 @@ class CapitalForm(forms.Form):
 		self.fields['capital'].widget.attrs.update({'class' : 'form-control'})
 
 	
-	
-# not using this form but for some information kept
 class ItemForm(forms.ModelForm):
 	error_messages = {'item_match': _("Item already exists."),}
 
