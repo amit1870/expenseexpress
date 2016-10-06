@@ -9,6 +9,9 @@ admin.site.register(PaymentMethod)
 
 
 class SpentAdmin(object):
+	class Meta:
+		model = Spent
+
 	list_display = ('spent_by', 'item', 'category', 'price', 'date','payment')
 	
 		
