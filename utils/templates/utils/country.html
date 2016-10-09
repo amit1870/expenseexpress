@@ -1,0 +1,54 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+{% load customtags %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>#</th>
+		                <th>Country</th>
+		                <th>Abrivation</th>
+		                <th>States</th>
+		                <th>URL</th>
+		                <th>Code</th>
+		                <th>Total</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+
+		            {% for desh in countries %}
+			            <tr>
+			            	<td>{{ forloop.counter }}</td>
+			            	<td> <a href="{% url 'utils:get_states' country=desh.abrcode %}"> {{ desh.name}} </a> </td>
+			            	<td>{{ desh.abrcode }}</td>
+			            	<td>{{ desh.scount }}</td>
+			            	<td> <a href="{{ desh.url }}"> {{ desh.url }} </a> </td>
+			            	<td>{{ desh.code }}</td>
+			            	<td>{{ desh.abrcode|vcount }}</td>
+			            </tr>
+			        {% endfor %}
+			        </tbody>
+			    </table>
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

@@ -90,8 +90,8 @@ def get_tehsils(district):
 	return tehsils
 
 
-def get_gaons(district):
-	soup = read_url(district)
+def get_gaons(tehsil):
+	soup = read_url(tehsil)
 	tbody = soup.findAll('tbody')[0]
 	Flag = False
 	gaons = []
@@ -112,22 +112,4 @@ def get_gaons(district):
 			gaons.append((gaon, link, pincode))
 	
 	return gaons
-
-
-		
-
-main_url = "http://vlist.in/"
-
-states = get_states(main_url)
-
-dist_url = "http://vlist.in/state/35.html"
-
-# print get_districts(dist_url)
-
-tehsil_url = "http://vlist.in/district/638.html"
-
-# print get_tehsils(tehsil_url)
-
-gaon_url = "http://vlist.in/sub-district/05916.html"
-
-print get_gaons(gaon_url)
+	

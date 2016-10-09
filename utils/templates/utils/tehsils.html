@@ -1,0 +1,60 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="{% url 'utils:get_states' country=country.abrcode%}">{{country.name}}</a> => 
+				<a href="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}">{{state.state}}</a> =>
+				<a href="{% url 'utils:get_tehsils' country=country.abrcode state=state.abrcode district=district.abrcode %}">{{district.district}}</a> =>
+				<table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>#</th>
+		                <th>Tehsil</th>
+		                <th>Abrivation</th>
+		                <th>Count</th>
+		                <th>Code</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		            {% for th in tehsils %}
+			            <tr>
+			            	<td>{{ forloop.counter }}</td>
+			            	<td> <a href="{% url 'utils:get_gaons' country=th.district.state.country.abrcode state=th.district.state.abrcode district=th.district.abrcode tehsil=th.abrcode %}">{{ th.tehsil }} </a> </td>
+			            	<td>{{ th.abrcode }}</td>
+			            	<td>{{ th.vcount }}</td>
+			            	<td>{{ th.code }}</td>
+			            </tr>
+			        {% endfor %}
+			        </tbody>
+			    </table>
+			    {% if tehsils|length == 0 %}
+
+			    <form action="{% url 'utils:get_tehsils' country=country.abrcode state=state.abrcode district=district.abrcode %}" method="post">
+			    	{% csrf_token %}
+			    	<button class="btn  btn-success" type="submit" alt="Download">Download</button>
+			    	
+			    </form>
+
+			    {% endif %}
+			    
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

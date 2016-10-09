@@ -10,6 +10,7 @@
 {% endblock %}
 	
 {% block js %}
+
 {% endblock %}
 
 
@@ -19,11 +20,12 @@
 		<div class="row">
 			<div class="col-md-3"></div>
 			<div class="col-md-4">
-				<form action="#" method="post">
+				<form action="{% url 'utils:add_country' %}" method="post">
+					{% csrf_token %}
+					{{ form.as_p}}
 					
-					
-					<button class="btn  btn-success btn-block " type="submit" alt="Add Country">Add</button>
-					
+					<button class="btn  btn-success btn-block " type="submit" alt="Add Country">Add Country</button>
+					<a class="btn btn-info btn-block" href="{% url 'utils:get_countries'%}" role="button">Country</a>
 				</form>
 			</div>
 			<div class="col-md-5"></div>

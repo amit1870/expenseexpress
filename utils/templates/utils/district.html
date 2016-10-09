@@ -1,0 +1,59 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="{% url 'utils:get_states' country=country.abrcode%}">{{country.name}}</a> => 
+				<a href="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}">{{state.state}}</a> =>
+				<table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>#</th>
+		                <th>District</th>
+		                <th>Abrivation</th>
+		                <th>Count</th>
+		                <th>Code</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		            {% for dt in districts %}
+			            <tr>
+			            	<td>{{ forloop.counter }}</td>
+			            	<td> <a href="{% url 'utils:get_tehsils' country=dt.state.country.abrcode state=dt.state.abrcode district=dt.abrcode %}">{{ dt.district }} </a> </td>
+			            	<td>{{ dt.abrcode }}</td>
+			            	<td>{{ dt.vcount }}</td>
+			            	<td>{{ dt.code }}</td>
+			            </tr>
+			        {% endfor %}
+			        </tbody>
+			    </table>
+			    {% if districts|length == 0 %}
+
+			    <form action="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}" method="post">
+			    	{% csrf_token %}
+			    	<button class="btn  btn-success" type="submit" alt="Download">Download</button>
+			    	
+			    </form>
+
+			    {% endif %}
+			    
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

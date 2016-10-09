@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Cash, Spent, Category, Payment, Item
+from utils.models import Village
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from .forms import CapitalForm, ItemForm
 from django.core import urlresolvers
@@ -299,6 +300,7 @@ def search_item(request):
 			names = []
 			for item in items:
 				names.append(item.name)
+
 			return HttpResponse(",".join(names))
 
 @login_required

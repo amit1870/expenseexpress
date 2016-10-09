@@ -1,5 +1,6 @@
 from django import template
 from kharch.models import Item
+from utils.models import Country
 register = template.Library()
 
 
@@ -24,3 +25,9 @@ def status(stats,idx):
 	return stats[idx]
 
 register.filter('status', status)
+
+def total_village(country):
+	country = Country.objects.get(abrcode=country)
+	return sum(country.state_set.values_list('vcount',flat=True))
+
+register.filter('vcount', total_village)

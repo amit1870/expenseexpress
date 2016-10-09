@@ -1,0 +1,31 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="{% url 'utils:get_states' country=country.abrcode%}">{{country.name}}</a> => 
+				<a href="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}">{{state.state}}</a> =>
+				<a href="{% url 'utils:get_tehsils' country=country.abrcode state=state.abrcode district=district.abrcode %}">{{district.district}}</a> =>
+				<a href="{% url 'utils:get_gaons' country=country.abrcode state=state.abrcode district=district.abrcode tehsil=tehsil.abrcode %}">{{tehsil.tehsil}}</a> =>
+				{{ villa.village }}
+								
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

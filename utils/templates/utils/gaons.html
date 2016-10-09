@@ -1,0 +1,60 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+{% endblock %}
+
+
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="{% url 'utils:get_states' country=country.abrcode%}">{{country.name}}</a> => 
+				<a href="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}">{{state.state}}</a> =>
+				<a href="{% url 'utils:get_tehsils' country=country.abrcode state=state.abrcode district=district.abrcode %}">{{district.district}}</a> =>
+				<a href="{% url 'utils:get_gaons' country=country.abrcode state=state.abrcode district=district.abrcode tehsil=tehsil.abrcode %}">{{tehsil.tehsil}}</a> =>
+				
+				<table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>#</th>
+		                <th>Village</th>
+		                <th>Abrivation</th>
+		                <th>Pincode</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		            {% for gn in gaons %}
+			            <tr>
+			            	<td>{{ forloop.counter }}</td>
+			            	<td> <a href="{% url 'utils:get_villa' country=gn.tehsil.district.state.country.abrcode state=gn.tehsil.district.state.abrcode district=gn.tehsil.district.abrcode tehsil=gn.tehsil.abrcode gaon=gn.abrcode %}">{{ gn.village }} </a> </td>
+			            	<td>{{ gn.abrcode }}</td>
+			            	<td>{{ gn.pincode }}</td>
+			            </tr>
+			        {% endfor %}
+			        </tbody>
+			    </table>
+			    {% if gaons|length == 0 %}
+
+			    <form action="{% url 'utils:get_gaons' country=country.abrcode state=state.abrcode district=district.abrcode tehsil=tehsil.abrcode %}" method="post">
+			    	{% csrf_token %}
+			    	<button class="btn  btn-success" type="submit" alt="Download">Download</button>
+			    	
+			    </form>
+
+			    {% endif %}
+			    
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}
