@@ -8,6 +8,7 @@ from utils.current_user import get_current_user
 from itertools import chain
 import datetime
 import bharat as bh
+import data
 
 def add_country(request):
 	if request.method == "GET":
@@ -49,15 +50,26 @@ def get_states(request,country):
 
 		for state in states:
 			name, link, count = state
-			st = State.objects.create(country=country, state=name, url=link, vcount=count)
-			st.abrcode = st.id
-			st.save()
+			st = State.objects.create(country=country, state=name, url=link, vcount=count, abrcode=data.states_dict[name][0])
 
 		country.scount = State.objects.filter(country=country).count()
 		country.save()
 
 		url = urlresolvers.reverse('utils:get_states', kwargs={'country': country.abrcode})
 		return HttpResponseRedirect(url)
+
+def update_states(request, country):
+	country_obj = Country.objects.get(abrcode=country)
+	if request.method == "POST":
+		states = State.objects.all().filter(country=country_obj)
+		for state in states:
+			state.abrcode = data.states_dict[state.state][0]
+			state.save()
+
+		url = urlresolvers.reverse('utils:get_states', kwargs={'country': country})
+		return HttpResponseRedirect(url)
+
+
 
 def get_districts(request,country,state):
 	state = str(state)
@@ -73,18 +85,19 @@ def get_districts(request,country,state):
 
 	else:
 		try:
-			districts = bh.get_districts(state_obj.url)
+			districts = data.dist_dict[state]
 		except:
-			districts = []
+			districts = bh.get_districts(state_obj.url)
 
 		for district in districts:
-			name, link, count = district
-			dt = District.objects.create(state=state_obj, district=name, url=link, vcount=count)
-			dt.abrcode = dt.id
-			dt.save()
+			abrcode, name, hq, population, area, density, link = district
+			dt = District.objects.create(state=state_obj, district=name, url=link, abrcode=abrcode, hq=hq,\
+										population=population, area=area, density=density)
 
 		url = urlresolvers.reverse('utils:get_districts', kwargs={'country': country ,'state': state })
 		return HttpResponseRedirect(url)
+
+
 
 def get_tehsils(request,country,state,district):
 	state = str(state)

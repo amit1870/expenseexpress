@@ -28,7 +28,6 @@
 		              <tr>
 		                <th>#</th>
 		                <th>Village</th>
-		                <th>Abrivation</th>
 		                <th>Pincode</th>
 		              </tr>
 		            </thead>
@@ -37,7 +36,6 @@
 			            <tr>
 			            	<td>{{ forloop.counter }}</td>
 			            	<td> <a href="{% url 'utils:get_villa' country=gn.tehsil.district.state.country.abrcode state=gn.tehsil.district.state.abrcode district=gn.tehsil.district.abrcode tehsil=gn.tehsil.abrcode gaon=gn.abrcode %}">{{ gn.village }} </a> </td>
-			            	<td>{{ gn.abrcode }}</td>
 			            	<td>{{ gn.pincode }}</td>
 			            </tr>
 			        {% endfor %}

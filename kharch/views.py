@@ -326,8 +326,10 @@ def get_item(request,item_name):
 
 @login_required
 def show_mobile(request):
+	user_id = get_current_user()
 	context = {}
-	spents = Spent.objects.filter(category=Category.objects.get(code="OT"))
+	spents = Spent.objects.filter(spent_by=user_id).filter(category=Category.objects.get(code="OT"))
+	print spents
 	spents = spents.filter(item__name__istartswith="MR")
 	context['spents'] = spents.order_by('-id')[:5]
 	status = []
@@ -353,3 +355,8 @@ def pay_due(request):
 
 	if request.method == "GET":
 		return render(request, 'kharch/pay_due.html', context)
+
+def buy_error(request):
+	context = {}
+	if request.method == "GET":
+		return render(request, 'kharch/error.html', context)

@@ -18,7 +18,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<a href="{% url 'utils:get_states' country=country.abrcode%}">{{country.name}}</a> => 
+				<a href="{% url 'utils:get_states' country=country.abrcode %}">{{country.name}}</a> => 
 				<a href="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}">{{state.state}}</a> =>
 				<a href="{% url 'utils:get_tehsils' country=country.abrcode state=state.abrcode district=district.abrcode %}">{{district.district}}</a> =>
 				<table class="table table-striped">

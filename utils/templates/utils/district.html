@@ -28,6 +28,10 @@
 		                <th>Abrivation</th>
 		                <th>Count</th>
 		                <th>Code</th>
+		                <th>Population</th>
+		                <th>Area/km2</th>
+		                <th>Density/km2</th>
+		                <th>URL</th>
 		              </tr>
 		            </thead>
 		            <tbody>
@@ -38,6 +42,10 @@
 			            	<td>{{ dt.abrcode }}</td>
 			            	<td>{{ dt.vcount }}</td>
 			            	<td>{{ dt.code }}</td>
+			            	<td>{{ dt.population }}</td>
+			            	<td>{{ dt.area }}</td>
+			            	<td>{{ dt.density }}</td>
+			            	<td><a href="{{ dt.url }}"> {{ dt.url }} </a></td>
 			            </tr>
 			        {% endfor %}
 			        </tbody>

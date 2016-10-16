@@ -34,18 +34,28 @@
 			            <tr>
 			            	<td>{{ forloop.counter }}</td>
 			            	<td><a href="{% url 'utils:get_districts' country=st.country.abrcode state=st.abrcode %}">{{ st.state }}</a> </td>
-			            	<td> </td>
+			            	<td>{{ st.abrcode }} </td>
 			            	<td>{{ st.vcount }}</td>
 			            	<td>{{ st.code }}</td>
 			            </tr>
 			        {% endfor %}
 			        </tbody>
 			    </table>
+
 			    {% else %}
 			    <br>
 			    <form action="{% url 'utils:get_states' country=country.abrcode %}" method="post">
 			    	{% csrf_token %}
 			    	<button class="btn  btn-success" type="submit" alt="Download">Download</button>
+			    	
+			    </form>
+			    {% endif %}
+			    
+			    {% if states|length > 0 %}
+			    <br>
+			    <form action="{% url 'utils:update_states' country=country.abrcode %}" method="post">
+			    	{% csrf_token %}
+			    	<button class="btn  btn-success" type="submit" alt="Update">Update</button>
 			    	
 			    </form>
 			    {% endif %}

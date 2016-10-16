@@ -28,6 +28,10 @@ class District(models.Model):
 	url = models.URLField(max_length=100, blank=True)
 	vcount = models.PositiveIntegerField(default=0)
 	code = models.CharField(blank=True, max_length=10)
+	hq = models.CharField(blank=True, max_length=100)
+	population = models.PositiveIntegerField(default=0)
+	area = models.PositiveIntegerField(default=0)
+	density = models.PositiveIntegerField(default=0)
 
 	def __str__(self):
 		return "%s" % self.district
@@ -42,7 +46,6 @@ class Tehsil(models.Model):
 
 	def __str__(self):
 		return "%s" % self.tehsil
-
 
 class Village(models.Model):
 	tehsil = models.ForeignKey(Tehsil)
