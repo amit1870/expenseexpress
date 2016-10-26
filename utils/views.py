@@ -9,6 +9,35 @@ from itertools import chain
 import datetime
 import bharat as bh
 import data
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from utils.serializers import DistrictSerializer
+
+class JSONResponse(HttpResponse):
+	def __init__(self, data, **kwargs):
+		content = JSONRenderer().render(data)
+		kwargs['content_type'] = 'application/json'
+		super(JSONResponse, self).__init__(content, **kwargs)
+
+@csrf_exempt
+def district_list(request,country, state):
+	if request.method == "GET":
+		country_obj = Country.objects.get(abrcode=country)
+		state_obj = [st for st in State.objects.filter(country=country_obj) if st.abrcode == state][0]
+		districts = District.objects.all().filter(state=state_obj)
+		serializer = DistrictSerializer(districts, many=True)
+		return JSONResponse(serializer.data)
+
+	elif request.method == 'POST':
+		data = JSONParser().parse(request)
+		serializer = DistrictSerializer(data=data)
+		if serializer.is_valid():
+			serializer.save()
+			return JSONResponse(serializer.data, status=201)
+		return JSONResponse(serializer.errors, status=400)
+
 
 def add_country(request):
 	if request.method == "GET":
