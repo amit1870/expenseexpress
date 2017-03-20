@@ -26,6 +26,11 @@ def status(stats,idx):
 
 register.filter('status', status)
 
+def validity(valids, idx):
+	return valids[idx]
+
+register.filter('valid', validity)
+
 def total_village(country):
 	country = Country.objects.get(abrcode=country)
 	return sum(country.state_set.values_list('vcount',flat=True))

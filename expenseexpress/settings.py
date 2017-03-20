@@ -85,7 +85,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "expense",
-        'USER': "amit",
+        'USER': "root",
         'PASSWORD': "n0wL!nux",
         'HOST': '',
     }

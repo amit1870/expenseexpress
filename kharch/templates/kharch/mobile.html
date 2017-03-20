@@ -79,16 +79,17 @@
 			                <td>{{spent.validity}}</td>
 			                
 			                <td>
+
 			                	{% if status|status:forloop.counter0 == "Green"%}
-			                		<button class="btn btn-success btn-xs" type="submit" alt="Green" id="green">Green</button>
+			                		<button class="btn btn-success btn-xs" type="submit" alt="Green" id="green">{{ valid|valid:forloop.counter0 }}</button>
 			                	{% endif %}
 
 			                	{% if status|status:forloop.counter0 == "Yellow"%}
-			                		<button class="btn btn-warning btn-xs" type="submit" alt="Yellow" id="yellow">Yellow</button>
+			                		<button class="btn btn-warning btn-xs" type="submit" alt="Yellow" id="yellow">{{ valid|valid:forloop.counter0 }}</button>
 			                	{% endif %}
 
 			                	{% if status|status:forloop.counter0 == "Red"%}
-			                		<button class="btn btn-danger btn-xs" type="submit" alt="Red" id="red">Red</button>
+			                		<button class="btn btn-danger btn-xs" type="submit" alt="Red" id="red">{{ valid|valid:forloop.counter0 }}</button>
 			                	{% endif %}
 
 			                	<button class="btn btn-info btn-xs" data-toggle="modal" data-target="#{{spent.id}}">Edit</button>

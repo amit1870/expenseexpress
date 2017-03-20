@@ -20,9 +20,14 @@ class PaymentMethod(models.Model):
 
 
 class Cash(models.Model):
+	MONEY_TYPE = (
+			("ELEC","Electronic"),
+			("CASH","Cash"),
+		)
 	loaded_by = models.ForeignKey(User, default=get_current_user)
 	capital = models.PositiveIntegerField(default=0)
 	date = models.DateField(auto_now=True)
+	form = models.CharField(max_length=4, choices=MONEY_TYPE,default="CASH")
 
 	def __str__(self):
 		return "%s" % self.capital

@@ -8,6 +8,7 @@ class CapitalForm(forms.Form):
 
 	def __init__(self, *args, **kwargs):
 		super(CapitalForm, self).__init__(*args, **kwargs)
+		self.fields['capital'].widget.attrs.update({'placeholder' : 'Integer Only'})
 		self.fields['capital'].widget.attrs.update({'class' : 'form-control'})
 
 	

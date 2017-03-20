@@ -145,6 +145,7 @@ def get_tehsils(request,country,state,district):
 
 	else:
 		try:
+			
 			tehsils = bh.get_tehsils(dist_obj.url)
 		except:
 			tehsils = []

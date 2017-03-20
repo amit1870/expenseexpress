@@ -62,6 +62,7 @@ def dashboard(request, template_name="accounts/registration/dashboard.html"):
 	context['spent'] = sum([roti,kapda,makan,other,sex])
 
 	credit = spent.filter(payment=Payment.objects.get(code="CR")).filter(paid=False)
+	
 	credit = int(sum(credit.values_list('price',flat=True)))
 
 	context['credit'] = credit
@@ -73,12 +74,10 @@ def dashboard(request, template_name="accounts/registration/dashboard.html"):
 def login(request,template_name="accounts/registration/login.html"):
 	
 	if request.method == "GET":
-		# print request.method
 		context = {}
 		return render(request, template_name, context)
 
 	else:
-		print request.POST
 		postdata = request.POST.copy()
 		un = postdata.get('username','')
 		pw = postdata.get('password','')
@@ -108,7 +107,6 @@ def upload_file(request):
 			context['form'] = form
 			context['error'] = "Please select a file."
 			return render(request, 'registration/upload.html', context)
-
 
 	else:
 		form = ModelFormWithFileField()

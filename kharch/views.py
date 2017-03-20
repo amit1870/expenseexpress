@@ -14,6 +14,8 @@ def index(request):
 	user_id = get_current_user()
 
 	if request.method == "GET" and user_id is not None:
+		form = CapitalForm()
+
 		cash = Cash.objects.filter(loaded_by=user_id)
 		cash = sum(cash.values_list('capital',flat=True))
 
@@ -35,14 +37,15 @@ def index(request):
 			other = int(sum(other.values_list('price',flat=True)))
 
 			sex   = spent.filter(category=Category.objects.get(code="XX"))
-			sex = int(sum(sex.values_list('price',flat=True)))
+			sex   = int(sum(sex.values_list('price',flat=True)))
 
 		else:
 			roti = kapda = makan = other = sex = 0
+			spent = 0
 
-		form1 = CapitalForm()
+		
 		if cash > 0 :
-			remain = (cash - sum([roti, kapda, makan, other, sex]))*100/cash
+			remain = cash - sum([roti, kapda, makan, other, sex])
 			gayab = 100 - remain
 		else:
 			remain = 0
@@ -56,7 +59,7 @@ def index(request):
 		context['makan'] = makan
 		context['other'] = other
 		context['sex'] 	= sex
-		context['form1'] = form1
+		context['form'] = form
 		context['items'] = items
 		context['remain'] = remain
 		context['gayab'] = gayab
@@ -113,7 +116,7 @@ def index(request):
 				added_by = obj.added_by
 				append = request.POST.getlist('append[]')
 				date = request.POST["buy_date_"+item]
-				date = datetime.datetime.strptime(date, '%m/%d/%Y').strftime('%Y-%m-%d')
+				date = datetime.datetime.strptime(date, '%d/%m/%Y').strftime('%Y-%m-%d')
 				if item in append :
 					obj.inherited_by.add(user_id)
 					obj.save()
@@ -141,7 +144,7 @@ def add_item(request):
 			cost = request.POST['cost']
 			category = request.POST['category']
 
-			Item.objects.create(name=name.capitalize(), cost=cost, category=Category.objects.get(id=category))
+			Item.objects.create(name=name, cost=cost, category=Category.objects.get(id=category))
 			
 			url = urlresolvers.reverse('kharch:add_item')
 			return HttpResponseRedirect(url)
@@ -333,19 +336,25 @@ def show_mobile(request):
 	spents = spents.filter(item__name__istartswith="MR")
 	context['spents'] = spents.order_by('-id')[:5]
 	status = []
+	valids = []
 	for spent in context['spents'] :
 		delta = datetime.date.today() - spent.date
 		validity = 0 if spent.validity == "NA" else int(spent.validity)
-		print delta.days - validity
-		if validity - delta.days  > 3 :
+		
+		diff = validity - delta.days
+		if diff  > 3 :
 			status.append("Green")
-		elif validity - delta.days in range(1,4):
+			valids.append(diff)
+		elif diff in range(1,4):
 			status.append("Yellow")
+			valids.append(diff)			
 		else:
 			status.append("Red")
+			valids.append(0)
 
 	context['status'] = status
-
+	context['valid'] = valids
+	print context
 	if request.method == "GET":
 		return render(request, 'kharch/mobile.html', context)
 
