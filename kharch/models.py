@@ -58,6 +58,7 @@ class Spent(models.Model):
 	price 	= models.DecimalField(max_digits=5,decimal_places=1)
 	date 	= models.DateField(blank=False)
 	paid 	= models.BooleanField(default=True)
+	pay_date = models.DateField(blank=True)
 	payment	= models.ForeignKey(Payment)
 	validity = models.CharField(max_length=5,default="NA")
 	needed 	= models.BooleanField(default=True)

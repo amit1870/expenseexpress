@@ -39,35 +39,35 @@ def dashboard(request, template_name="accounts/registration/dashboard.html"):
 	cash = Cash.objects.filter(loaded_by=user_id)
 	cash = sum(cash.values_list('capital',flat=True))
 	context['total'] = cash
-
 	spent = Spent.objects.filter(spent_by=user_id)
-
 	context['spent_on'] = spent
 
 	roti = spent.filter(category=Category.objects.get(code='RT'))
 	roti = int(sum(roti.values_list('price',flat=True)))
-
+	
 	kapda = spent.filter(category=Category.objects.get(code='KP'))
 	kapda = int(sum(kapda.values_list('price',flat=True)))
-
+	
 	makan = spent.filter(category=Category.objects.get(code='MK'))
 	makan = int(sum(makan.values_list('price',flat=True)))
-
+	
 	other = spent.filter(category=Category.objects.get(code='OT'))
 	other = int(sum(other.values_list('price',flat=True)))
-
-	sex   = spent.filter(category=Category.objects.get(code='XX'))
-	sex = int(sum(sex.values_list('price',flat=True)))
-
-	context['spent'] = sum([roti,kapda,makan,other,sex])
-
-	credit = spent.filter(payment=Payment.objects.get(code="CR")).filter(paid=False)
 	
+	mobile   = spent.filter(category=Category.objects.get(code='MB'))
+	mobile = int(sum(mobile.values_list('price',flat=True)))
+	
+	context['spent'] = sum([roti,kapda,makan,other,mobile])
+	
+	credit = spent.filter(payment=Payment.objects.get(code="CR")).filter(paid=False)
 	credit = int(sum(credit.values_list('price',flat=True)))
-
+	
+	online = spent.filter(payment=Payment.objects.get(code="DB")).filter(paid=True)
+	online  = int(sum(online.values_list('price',flat=True)))
+	
+	context['online'] = online
 	context['credit'] = credit
-
-	context['remain'] = context['total'] - context['spent'] + context['credit']
+	context['remain'] = context['total'] - context['spent'] + context['credit'] + context['online']
 
 	return render(request, template_name, context)
 

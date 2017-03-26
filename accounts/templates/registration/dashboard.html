@@ -79,10 +79,18 @@
             </tbody>
           </table>
         </div>
-        <h2>Sum: {{ total }} </h2>
-        <h2>Rem: {{ remain }} </h2>
-        <h2>Due: {{ credit }} </h2>
-          <a class="btn btn-success" href="{% url 'kharch:pay_due' %}" role="button">Pay</a>
+        <h2>Loaded: {{ total }} </h2>
+        <h2>Spent: {{ spent }} </h2>
+        <h2>Cash: {{ remain }} </h2>
+        <h2>Karja: {{ credit }} </h2>
+        <h2>Online: {{ online }}</h2>
+          {% if credit > 0 %}
+            <form method="post" action="{% url 'kharch:pay_due' %}">
+                {% csrf_token %}
+                <button class="btn btn-success">Pay</button>
+            </form>
+          
+          {% endif %}
 
 		</div>
 		<div class="col-md-3">

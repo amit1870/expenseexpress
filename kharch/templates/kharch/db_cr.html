@@ -1,0 +1,78 @@
+{% extends "kharch/base.html" %}
+{% load staticfiles %}
+{% load customtags %}
+
+{% block title %}
+	<title > Manage your Expense | ExpenseExpress </title>
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+	
+{% block js %}
+
+{% endblock %}
+
+{% block site_wrapper %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-responsive">
+		          <table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>#</th>
+		                <th>Name</th>
+		                <th>Category</th>
+		                <th>Price</th>
+		                <th>Date</th>
+		                <th>Mode(CR/DB)</th>
+		                <th>Paid</th>
+		                <th>Pay Date</th>
+		                
+		              </tr>
+		            </thead>
+		            <tbody>
+		            {%for onln in online%}
+		            	<tr>
+			            	<td>{{ forloop.counter }}</td>
+			            	<td> <a href="{% url 'kharch:get_item'  item_name=onln.item %}"> {{ onln.item}} </a> </td>
+			            	<td>{{ onln.category }}</td>
+			            	<td>{{ onln.price }}</td>
+			            	<td>{{ onln.date }}</td>
+			            	<td> {{ onln.payment.code }}</td>
+			            	<td> {{ onln.paid }}</td>
+			            	<td>{{ onln.pay_date }}</td>
+			            </tr>
+		            {% endfor %}
+		            <br><br>
+		            {%for cr in credit %}
+		            	<tr>
+			            	<td>{{ forloop.counter }}</td>
+			            	<td> <a href="{% url 'kharch:get_item'  item_name=cr.item %}"> {{ cr.item}} </a> </td>
+			            	<td>{{ cr.category }}</td>
+			            	<td>{{ cr.price }}</td>
+			            	<td>{{ cr.date }}</td>
+			            	<td> {{ cr.payment.code }}</td>
+			            	<td> {{ cr.paid }}</td>
+			            	<td>{{ cr.pay_date }}</td>
+			            </tr>
+		            {% endfor %}
+		            </tbody>
+		          </table>
+		        </div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		// $(function() {
+		//     $('input[name^="spent_date"]').daterangepicker({
+		//         singleDatePicker: true,
+		//         showDropdowns: true,
+		        
+		//     });
+		// });
+	</script>
+
+{% endblock %}

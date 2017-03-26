@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^buy-error/$', views.buy_error, name='buy_error'),
     url(r'^history/$', views.history, name='history'),
     url(r'^mobile/$', views.show_mobile, name='mobile'),
+    url(r'^db-cr/$', views.debit_credit, name='db_cr'),
     url(r'^item/(?P<item_name>[-\w]+)/$', views.get_item,name="get_item"),
     url(r'^pay-due/$', views.pay_due, name='pay_due'),
 
