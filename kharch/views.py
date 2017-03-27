@@ -131,7 +131,8 @@ def index(request):
 					obj.inherited_by.add(user_id)
 					obj.save()
 				paid = False if payment == "CR" else True
-				Spent.objects.create(item=obj, paid=paid, category=Category.objects.get(id=obj.category_id), payment=Payment.objects.get(code=payment), price=request.POST[item], date=date, pay_date=date)
+				validity = 28 if obj.category.code == "MB" else 0
+				Spent.objects.create(item=obj, paid=paid, validity=validity, category=Category.objects.get(id=obj.category_id), payment=Payment.objects.get(code=payment), price=request.POST[item], date=date, pay_date=date)
 
 		return HttpResponseRedirect(".")
 
