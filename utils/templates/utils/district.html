@@ -25,13 +25,10 @@
 		              <tr>
 		                <th>#</th>
 		                <th>District</th>
-		                <th>Abrivation</th>
 		                <th>Count</th>
-		                <th>Code</th>
 		                <th>Population</th>
 		                <th>Area/km2</th>
 		                <th>Density/km2</th>
-		                <th>URL</th>
 		              </tr>
 		            </thead>
 		            <tbody>
@@ -39,13 +36,10 @@
 			            <tr>
 			            	<td>{{ forloop.counter }}</td>
 			            	<td> <a href="{% url 'utils:get_tehsils' country=dt.state.country.abrcode state=dt.state.abrcode district=dt.abrcode %}">{{ dt.district }} </a> </td>
-			            	<td>{{ dt.abrcode }}</td>
 			            	<td>{{ dt.vcount }}</td>
-			            	<td>{{ dt.code }}</td>
 			            	<td>{{ dt.population }}</td>
 			            	<td>{{ dt.area }}</td>
 			            	<td>{{ dt.density }}</td>
-			            	<td><a href="{{ dt.url }}"> {{ dt.url }} </a></td>
 			            </tr>
 			        {% endfor %}
 			        </tbody>
@@ -58,6 +52,15 @@
 			    	
 			    </form>
 
+			    {% endif %}
+
+			    {% if districts|length > 0 %}
+			    <br>
+			    <form action="{% url 'utils:get_districts' country=country.abrcode state=state.abrcode %}" method="post">
+			    	{% csrf_token %}
+			    	<button class="btn  btn-success" type="submit" alt="Update">Update</button>
+			    	
+			    </form>
 			    {% endif %}
 			    
 			</div>

@@ -52,6 +52,16 @@
 			    </form>
 
 			    {% endif %}
+
+			    {% if tehsils|length > 0 %}
+
+			    <form action="{% url 'utils:get_tehsils' country=country.abrcode state=state.abrcode district=district.abrcode %}" method="post">
+			    	{% csrf_token %}
+			    	<button class="btn  btn-success" type="submit" alt="Update">Update</button>
+			    	
+			    </form>
+
+			    {% endif %}
 			    
 			</div>
 		</div>

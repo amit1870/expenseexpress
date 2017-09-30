@@ -50,7 +50,7 @@ def add_country(request):
 		abrcode = request.POST['abrcode']
 		url = request.POST['url']
 		code = request.POST['code']
-		Country.objects.create(name=country, abrcode=abrcode, url=url, code=code)
+		Country.objects.update_or_create(name=country, abrcode=abrcode, url=url, code=code)
 		url = urlresolvers.reverse('utils:add_country')
 		return HttpResponseRedirect(url)
 
@@ -61,7 +61,7 @@ def get_countries(request):
 		return render(request, 'utils/country.html', context)
 
 
-def get_states(request,country):
+def get_states(request, country):
 	country = Country.objects.get(abrcode=country)
 	if request.method == "GET":
 		context = {}
@@ -79,7 +79,14 @@ def get_states(request,country):
 
 		for state in states:
 			name, link, count = state
-			st = State.objects.create(country=country, state=name, url=link, vcount=count, abrcode=data.states_dict[name][0])
+			abrcode = name[:2].upper()
+			st = State.objects.update_or_create(
+					country=country,
+					state=name,
+					url=link,
+					vcount=count,
+					abrcode=abrcode,
+				)
 
 		country.scount = State.objects.filter(country=country).count()
 		country.save()
@@ -87,20 +94,7 @@ def get_states(request,country):
 		url = urlresolvers.reverse('utils:get_states', kwargs={'country': country.abrcode})
 		return HttpResponseRedirect(url)
 
-def update_states(request, country):
-	country_obj = Country.objects.get(abrcode=country)
-	if request.method == "POST":
-		states = State.objects.all().filter(country=country_obj)
-		for state in states:
-			state.abrcode = data.states_dict[state.state][0]
-			state.save()
-
-		url = urlresolvers.reverse('utils:get_states', kwargs={'country': country})
-		return HttpResponseRedirect(url)
-
-
-
-def get_districts(request,country,state):
+def get_districts(request, country, state):
 	state = str(state)
 	country_obj = Country.objects.get(abrcode=country)
 	state_obj = [st for st in State.objects.all().filter(country=country_obj) if st.abrcode == state][0]
@@ -114,21 +108,27 @@ def get_districts(request,country,state):
 
 	else:
 		try:
-			districts = data.dist_dict[state]
-		except:
 			districts = bh.get_districts(state_obj.url)
+		except:
+			districts = []
 
 		for district in districts:
-			abrcode, name, hq, population, area, density, link = district
-			dt = District.objects.create(state=state_obj, district=name, url=link, abrcode=abrcode, hq=hq,\
-										population=population, area=area, density=density)
+			name, link, count = district
+			abrcode = name[:3].upper()
+			dt = District.objects.update_or_create(
+					state=state_obj,
+					district=name,
+					url=link,
+					abrcode=abrcode,
+					vcount=count,
+				)
 
 		url = urlresolvers.reverse('utils:get_districts', kwargs={'country': country ,'state': state })
 		return HttpResponseRedirect(url)
 
 
 
-def get_tehsils(request,country,state,district):
+def get_tehsils(request, country, state, district):
 	state = str(state)
 	district = str(district)
 	country_obj = Country.objects.get(abrcode=country)
@@ -152,14 +152,19 @@ def get_tehsils(request,country,state,district):
 
 		for tehsil in tehsils:
 			name, link, count = tehsil
-			th = Tehsil.objects.create(district=dist_obj, tehsil=name, url=link, vcount=count)
-			th.abrcode = th.id
-			th.save()
+			abrcode = name[:3].upper()
+			th = Tehsil.objects.update_or_create(
+					district=dist_obj,
+					tehsil=name,
+					url=link,
+					vcount=count,
+					abrcode=abrcode,
+				)
 
 		url = urlresolvers.reverse('utils:get_tehsils', kwargs={'country': country, 'state': state, 'district': district})
 		return HttpResponseRedirect(url)
 
-def get_gaons(request,country,state,district, tehsil):
+def get_gaons(request, country, state, district, tehsil):
 	country = str(country)
 	state = str(state)
 	district = str(district)
@@ -187,15 +192,20 @@ def get_gaons(request,country,state,district, tehsil):
 
 		for gaon in gaons:
 			name, link, pincode = gaon
-			vg = Village.objects.create(tehsil=tehsil_obj, village=name, url=link, pincode=pincode)
-			vg.abrcode = vg.id
-			vg.save()
+			abrcode = name[:3].upper()
+			vg = Village.objects.update_or_create(
+					tehsil=tehsil_obj,
+					abrcode=abrcode,
+					village=name,
+					url=link,
+					pincode=pincode,
+				)
 
 		url = urlresolvers.reverse('utils:get_gaons', kwargs={'country': country, 'state': state, 'district': district, 'tehsil':tehsil })
 		return HttpResponseRedirect(url)
 
 
-def get_villa(request,country,state,district, tehsil, gaon):
+def get_villa(request, country, state, district, tehsil, gaon):
 	country_obj = Country.objects.get(abrcode=country)
 	state_obj = [st for st in State.objects.all().filter(country=country_obj) if st.abrcode == state][0]
 	dist_obj = [dt for dt in District.objects.all().filter(state=state_obj) if dt.abrcode == district][0]
