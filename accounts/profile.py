@@ -1,5 +1,6 @@
 from .models import UserProfile
 from .forms import RegistrationForm
+from expenseexpress import settings
 
 def retrieve(request):
 	''' note that this requires an authenticated user before we try calling it '''
@@ -19,6 +20,6 @@ def set(request):
 
 def handle_uploaded_file(request,f):
 	profile_name = request.user.username
-	with open('/home/amit/gitcode/expenseexpress/kharch/static/kharch/img/' + profile_name, 'wb+') as destination:
+	with open(settings.BASE_DIR + '/kharch/static/kharch/img/' + profile_name, 'wb+') as destination:
 		for chunk in f.chunks():
 			destination.write(chunk)

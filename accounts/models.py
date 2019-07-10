@@ -10,4 +10,4 @@ class UserProfile(models.Model):
 		return 'User Profile for: ' + self.user.username
 
 class Document(models.Model):
-	docfile = models.FileField(upload_to='documents/%Y/%m/%d')
+	docfile = models.FileField(upload_to='')

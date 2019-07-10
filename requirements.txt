@@ -1,0 +1,5 @@
+djangorestframework==3.6.4
+requests
+MYSQL-python
+BeautifulSoup4
+Django==1.8.0

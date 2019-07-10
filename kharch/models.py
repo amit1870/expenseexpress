@@ -5,8 +5,13 @@ from django.db.models import signals
 from django.dispatch import receiver
 
 class Payment(models.Model):
-	name = models.CharField(max_length=10,blank=False, unique=True)
-	code = models.CharField(max_length=2, blank=False, unique=True)
+	PAYMENT_CODE = (
+			("RK", "Rokda"),
+			("DB", "Online"),
+			("CR", "Credit"),
+		)
+	name = models.CharField(max_length=10,blank=True, unique=True)
+	code = models.CharField(max_length=2, choices=PAYMENT_CODE, default="CR")
 
 	def __str__(self):
 		return "%s" % self.name
@@ -33,8 +38,15 @@ class Cash(models.Model):
 		return "%s" % self.capital
 
 class Category(models.Model):
-	name = models.CharField(max_length=10,blank=False, unique=True)
-	code = models.CharField(max_length=2, blank=False, unique=True)
+	CATEGORY_CODE = (
+			("RT", "Roti"),
+			("KP", "Vastra"),
+			("MK", "Ghar"),
+			("MB", "Mobile"),
+			("OT", "Other"),
+		)
+	name = models.CharField(max_length=10,blank=True, unique=True)
+	code = models.CharField(max_length=2, choices=CATEGORY_CODE, default="RT")
 
 	def __str__(self):
 		return "%s" % (self.name)

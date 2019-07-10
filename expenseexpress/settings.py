@@ -85,7 +85,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "expense",
-        'USER': "root",
+        'USER': "django",
         'PASSWORD': "n0wL!nux",
         'HOST': '',
     }
@@ -123,11 +123,8 @@ META_DESCRIPTION = "Expense Express"
 
 LOGIN_URL = "/accounts/register/"
 
-MEDIA_ROOT = os.path.join("/home/amit/Pictures", 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    '/home/amit/Pictures/media/',
-]
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, "static"), MEDIA_ROOT ]
