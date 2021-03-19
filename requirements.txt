@@ -1,4 +1,4 @@
-djangorestframework==3.6.4
+djangorestframework==3.11.2
 requests
 MYSQL-python
 BeautifulSoup4
